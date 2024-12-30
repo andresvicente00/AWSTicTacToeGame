@@ -1,0 +1,8 @@
+
+How Amazon Q Developer Was Used in Building the App
+
+Amazon Q Developer was used to simplify the development process for the AWSTicTacToeGame. It provided tools and resources to:
+1. Streamline the setup and hosting of the application on AWS, ensuring easy deployment.
+2. Enable smooth integration with AWS services for scalability and reliability.
+
+Since this version of the game is for two players only, Amazon Q Developer primarily supported the backend and deployment aspects of the application.

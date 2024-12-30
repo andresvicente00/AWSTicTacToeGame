@@ -1,0 +1,71 @@
+
+Testing Instructions for AWSTicTacToeGame
+
+Prerequisites
+- Ensure you have the following installed:
+  - A modern web browser (e.g., Chrome, Firefox, Edge).
+  - A code editor or IDE (optional, for viewing/modifying code).
+  - A local server tool like Live Server (optional, for running locally).
+
+Cloning the Repository
+1. Open a terminal or command prompt.
+2. Clone the repository using Git:
+   git clone https://github.com/andresvicente00/AWSTicTacToeGame.git
+3. Navigate into the project folder:
+   cd AWSTicTacToeGame
+
+Running the Application
+
+Option 1: Open Directly in Browser
+1. Open the index.html file in your browser by double-clicking it.
+2. The game should load, and you can start playing.
+
+Option 2: Run on a Local Server
+1. Install a local server tool like Live Server (if not already installed).
+2. Open the project folder in your code editor.
+3. Start the local server (e.g., right-click index.html and select Open with Live Server).
+4. Access the game in your browser at http://127.0.0.1:5500/ (or a similar address).
+
+Testing Features
+
+1. Basic Gameplay
+   - Open the application.
+   - Click on the cells to take turns as Player X and Player O.
+   - Verify that the game identifies wins, draws, and ongoing states correctly.
+
+2. AI Opponent
+   - Select the AI opponent option (if available).
+   - Play against the AI and observe its moves for fairness and logical decisions.
+
+3. Winning Cell Highlights
+   - Play until there’s a winning condition.
+   - Verify that the winning cells are highlighted.
+
+4. Scoreboard
+   - Play multiple rounds.
+   - Check that the scoreboard updates correctly for both players.
+
+5. Theme Toggle
+   - Test the theme toggle button (e.g., light/dark mode).
+   - Verify the UI updates to the selected theme.
+
+6. Sound Effects
+   - Perform actions (e.g., clicking a cell) and listen for sound effects.
+   - Ensure that sounds match the actions.
+
+7. Animations
+   - Observe transitions and animations during gameplay.
+   - Confirm smooth and responsive animations.
+
+Expected Results
+- Players can take turns without errors.
+- Game accurately determines winners, losers, or draws.
+- Features like theme toggles, sound effects, and animations work as intended.
+
+Reporting Issues
+If you encounter any issues or bugs, please:
+1. Create a new issue in the GitHub repository.
+2. Include:
+   - A description of the issue.
+   - Steps to reproduce the problem.
+   - Screenshots or error messages (if applicable).

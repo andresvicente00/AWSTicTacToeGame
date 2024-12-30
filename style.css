@@ -1,3 +1,11 @@
+/* Use CSS custom properties for reusable values */
+:root {
+    --cell-size: 100px;
+    --border-color: #333;
+    --hover-color: #f5f5f5;
+    --button-color: #4CAF50;
+    --button-hover: #45a049;
+}
 .container {
     text-align: center;
     margin-top: 50px;
