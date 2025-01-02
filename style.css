@@ -1,4 +1,21 @@
 /* Use CSS custom properties for reusable values */
+.scoreboard {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.2em;
+}
+
+.score {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+}
+
+.winning-cell {
+    background-color: #90EE90;
+    transition: background-color 0.3s ease-in-out;
+}
 :root {
     --cell-size: 100px;
     --border-color: #333;
