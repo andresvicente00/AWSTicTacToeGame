@@ -1,175 +1,266 @@
-let currentPlayer = 'X'; // X is human, O is AI
-let gameBoard = ['', '', '', '', '', '', '', '', ''];
-let gameActive = true;
-let scores = {
-    X: 0,
-    O: 0
-};
+'use strict';
 
-const HUMAN_PLAYER = 'X';
-const AI_PLAYER = 'O';
+class TicTacToe {
+    constructor() {
+        this.isAIThinking = false;
+        this.board = Array(9).fill('');
+        this.currentPlayer = 'X';
+        this.gameActive = false;
+        this.scores = { X: 0, O: 0 };
+        this.playerNames = { X: 'Player X', O: 'AI' };
 
-const cells = document.querySelectorAll('.cell');
-const playerTurn = document.getElementById('player-turn');
-const resetButton = document.getElementById('reset-button');
+        this.winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6] // Diagonals
+        ];
 
-const winningCombinations = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-    [0, 4, 8], [2, 4, 6] // Diagonals
-];
-
-function handleCellClick(e) {
-    const cell = e.target;
-    const index = parseInt(cell.getAttribute('data-index'));
-
-    if (gameBoard[index] !== '' || !gameActive || currentPlayer !== HUMAN_PLAYER) return;
-
-    // Human move
-    makeMove(index);
-
-    // AI move
-    if (gameActive) {
-        currentPlayer = AI_PLAYER;
-        playerTurn.textContent = "AI is thinking...";
-
-        // Add delay to make AI move feel more natural
-        setTimeout(() => {
-            const bestMove = findBestMove();
-            makeMove(bestMove);
-            if (gameActive) {
-                currentPlayer = HUMAN_PLAYER;
-                playerTurn.textContent = "Your turn";
-            }
-        }, 500);
-    }
-}
-
-function makeMove(index) {
-    gameBoard[index] = currentPlayer;
-    cells[index].textContent = currentPlayer;
-
-    if (checkWin()) {
-        gameActive = false;
-        const winner = currentPlayer === HUMAN_PLAYER ? "You win!" : "AI wins!";
-        playerTurn.textContent = winner;
-        highlightWinningCells();
-        updateScore();
-        return;
+        this.initializeElements();
+        this.addEventListeners();
+        this.loadGameState();
     }
 
-    if (checkDraw()) {
-        gameActive = false;
-        playerTurn.textContent = "It's a Draw!";
-        return;
-    }
-}
-
-function findBestMove() {
-    let bestScore = -Infinity;
-    let bestMove;
-
-    for (let i = 0; i < gameBoard.length; i++) {
-        if (gameBoard[i] === '') {
-            gameBoard[i] = AI_PLAYER;
-            let score = minimax(gameBoard, 0, false);
-            gameBoard[i] = '';
-
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = i;
-            }
-        }
-    }
-    return bestMove;
-}
-
-function minimax(board, depth, isMaximizing) {
-    let result = checkGameState();
-
-    if (result !== null) {
-        return result === AI_PLAYER ? 1 :
-            result === HUMAN_PLAYER ? -1 : 0;
+    initializeElements() {
+        this.cells = document.querySelectorAll('.cell');
+        this.playerTurn = document.getElementById('player-turn');
+        this.resetButton = document.getElementById('reset-button');
+        this.newGameButton = document.getElementById('new-game-button');
+        this.startButton = document.getElementById('start-game');
+        this.playerForm = document.getElementById('player-form');
+        this.xScoreElement = document.getElementById('x-score');
+        this.oScoreElement = document.getElementById('o-score');
+        this.xScoreLabel = document.getElementById('x-score-label');
+        this.oScoreLabel = document.getElementById('o-score-label');
     }
 
-    if (isMaximizing) {
-        let bestScore = -Infinity;
-        for (let i = 0; i < board.length; i++) {
-            if (board[i] === '') {
-                board[i] = AI_PLAYER;
-                let score = minimax(board, depth + 1, false);
-                board[i] = '';
-                bestScore = Math.max(score, bestScore);
-            }
-        }
-        return bestScore;
-    } else {
-        let bestScore = Infinity;
-        for (let i = 0; i < board.length; i++) {
-            if (board[i] === '') {
-                board[i] = HUMAN_PLAYER;
-                let score = minimax(board, depth + 1, true);
-                board[i] = '';
-                bestScore = Math.min(score, bestScore);
-            }
-        }
-        return bestScore;
-    }
-}
-
-function checkGameState() {
-    for (let combination of winningCombinations) {
-        if (gameBoard[combination[0]] &&
-            gameBoard[combination[0]] === gameBoard[combination[1]] &&
-            gameBoard[combination[0]] === gameBoard[combination[2]]) {
-            return gameBoard[combination[0]];
-        }
-    }
-    return gameBoard.includes('') ? null : 'tie';
-}
-
-function checkWin() {
-    return winningCombinations.some(combination => {
-        return combination.every(index => {
-            return gameBoard[index] === currentPlayer;
-        });
-    });
-}
-
-function highlightWinningCells() {
-    winningCombinations.forEach(combination => {
-        if (combination.every(index => gameBoard[index] === currentPlayer)) {
-            combination.forEach(index => {
-                cells[index].classList.add('winning-cell');
+    addEventListeners() {
+        this.cells.forEach(cell => {
+            cell.addEventListener('click', () => this.handleCellClick(cell));
+            cell.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.handleCellClick(cell);
+                }
             });
+        });
+
+        this.resetButton.addEventListener('click', () => this.resetGame());
+        this.newGameButton.addEventListener('click', () => this.fullReset());
+
+        this.playerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.startGame();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' || e.key === 'R') {
+                this.resetGame();
+            }
+        });
+    }
+
+    startGame() {
+        const playerXName = document.getElementById('player-x').value.trim();
+        const playerOName = document.getElementById('player-o').value.trim();
+
+        if (playerXName && playerOName) {
+            this.playerNames.X = playerXName;
+            this.playerNames.O = playerOName;
+            this.xScoreLabel.textContent = playerXName;
+            this.oScoreLabel.textContent = playerOName;
+            this.gameActive = true;
+            this.resetGame();
+            this.playerForm.style.display = 'none';
         }
-    });
+    }
+
+    handleCellClick(cell) {
+        if (!this.gameActive || this.isAIThinking) return;
+        if (this.currentPlayer === 'O' && this.playerNames.O === 'AI') return;
+
+        const index = parseInt(cell.dataset.index);
+        if (this.board[index] !== '') return;
+
+        this.makeMove(index);
+    }
+
+    makeMove(index) {
+        try {
+            this.validateMove(index);
+            this.board[index] = this.currentPlayer;
+            this.cells[index].textContent = this.currentPlayer;
+
+            const winningCombo = this.checkWin();
+            if (winningCombo) {
+                this.handleWin(winningCombo);
+            } else if (this.checkDraw()) {
+                this.handleDraw();
+            } else {
+                this.switchPlayer();
+            }
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
+    validateMove(index) {
+        if (index < 0 || index > 8) {
+            throw new Error('Invalid cell index');
+        }
+        if (this.board[index] !== '') {
+            throw new Error('Cell already occupied');
+        }
+        if (!this.gameActive) {
+            throw new Error('Game is not active');
+        }
+    }
+
+    switchPlayer() {
+        this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+        this.updateStatus();
+
+        if (this.currentPlayer === 'O' && this.playerNames.O === 'AI' && this.gameActive) {
+            this.makeAIMove();
+        }
+    }
+
+    makeAIMove() {
+        if (this.isAIThinking) return;
+        this.isAIThinking = true;
+
+        const emptyCells = this.board
+            .map((cell, index) => cell === '' ? index : null)
+            .filter(cell => cell !== null);
+
+        if (emptyCells.length > 0) {
+            const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            setTimeout(() => {
+                if (this.gameActive) {
+                    this.makeMove(randomIndex);
+                }
+                this.isAIThinking = false;
+            }, 500);
+        }
+    }
+
+    checkWin() {
+        for (let combination of this.winningCombinations) {
+            const [a, b, c] = combination;
+            if (this.board[a] &&
+                this.board[a] === this.board[b] &&
+                this.board[a] === this.board[c]) {
+                return combination;
+            }
+        }
+        return null;
+    }
+
+    highlightWinningCombination(combination) {
+        const directions = {
+            '012': 'horizontal',
+            '345': 'horizontal',
+            '678': 'horizontal',
+            '036': 'vertical',
+            '147': 'vertical',
+            '258': 'vertical',
+            '048': 'diagonal-1',
+            '246': 'diagonal-2'
+        };
+
+        const combinationString = combination.join('');
+        const direction = directions[combinationString] || 'horizontal';
+
+        combination.forEach(index => {
+            const cell = this.cells[index];
+            cell.classList.add('winner');
+            cell.dataset.winDirection = direction;
+        });
+    }
+
+    checkDraw() {
+        return this.board.every(cell => cell !== '');
+    }
+
+    handleWin(winningCombo) {
+        this.gameActive = false;
+        this.scores[this.currentPlayer]++;
+        this.updateScores();
+        this.highlightWinningCombination(winningCombo);
+        this.playerTurn.textContent = `${this.playerNames[this.currentPlayer]} wins!`;
+        this.saveGameState();
+    }
+
+    handleDraw() {
+        this.gameActive = false;
+        this.playerTurn.textContent = "It's a draw!";
+        this.saveGameState();
+    }
+
+    handleError(error) {
+        console.error('Game Error:', error);
+        this.playerTurn.textContent = 'An error occurred. Please reset the game.';
+        this.gameActive = false;
+    }
+
+    updateStatus() {
+        if (this.gameActive) {
+            this.playerTurn.textContent = `${this.playerNames[this.currentPlayer]}'s Turn`;
+        }
+    }
+
+    updateScores() {
+        this.xScoreElement.textContent = this.scores.X;
+        this.oScoreElement.textContent = this.scores.O;
+    }
+
+    saveGameState() {
+        const gameState = {
+            scores: this.scores,
+            playerNames: this.playerNames
+        };
+        localStorage.setItem('tictactoeState', JSON.stringify(gameState));
+    }
+
+    loadGameState() {
+        const savedState = localStorage.getItem('tictactoeState');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            this.scores = state.scores;
+            this.playerNames = state.playerNames;
+            this.updateScores();
+            this.xScoreLabel.textContent = this.playerNames.X;
+            this.oScoreLabel.textContent = this.playerNames.O;
+        }
+    }
+
+    resetGame() {
+        this.board = Array(9).fill('');
+        this.cells.forEach(cell => {
+            cell.textContent = '';
+            cell.classList.remove('winner');
+            delete cell.dataset.winDirection;
+        });
+        this.currentPlayer = 'X';
+        this.gameActive = true;
+        this.isAIThinking = false;
+        this.updateStatus();
+    }
+
+    fullReset() {
+        this.scores = { X: 0, O: 0 };
+        this.playerNames = { X: 'Player X', O: 'AI' };
+        localStorage.removeItem('tictactoeState');
+        this.updateScores();
+        this.xScoreLabel.textContent = this.playerNames.X;
+        this.oScoreLabel.textContent = this.playerNames.O;
+        this.playerForm.style.display = 'block';
+        this.playerForm.reset();
+        this.resetGame();
+        this.gameActive = false;
+        this.playerTurn.textContent = 'Enter player names to start';
+    }
 }
 
-function updateScore() {
-    scores[currentPlayer]++;
-    document.getElementById(`${currentPlayer.toLowerCase()}-score`).textContent = scores[currentPlayer];
-}
-
-function checkDraw() {
-    return gameBoard.every(cell => cell !== '');
-}
-
-function resetGame() {
-    gameBoard = ['', '', '', '', '', '', '', '', ''];
-    gameActive = true;
-    currentPlayer = HUMAN_PLAYER;
-    playerTurn.textContent = "Your turn";
-
-    cells.forEach(cell => {
-        cell.textContent = '';
-        cell.classList.remove('winning-cell');
-    });
-}
-
-// Event Listeners
-cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-resetButton.addEventListener('click', resetGame);
-
-// Initialize game
-resetGame();
+document.addEventListener('DOMContentLoaded', () => {
+    new TicTacToe();
+});
