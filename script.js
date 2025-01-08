@@ -264,3 +264,47 @@ class TicTacToe {
 document.addEventListener('DOMContentLoaded', () => {
     new TicTacToe();
 });
+document.addEventListener('DOMContentLoaded', function() {
+    const playerForm = document.getElementById('player-form');
+    const gameBoard = document.querySelector('.game-board');
+    const resetButton = document.getElementById('reset-button');
+    const newGameButton = document.getElementById('new-game-button');
+    const gameInfo = document.querySelector('.game-info');
+
+    // Initially hide game elements
+    gameBoard.style.display = 'none';
+    resetButton.style.display = 'none';
+    newGameButton.style.display = 'none';
+    gameInfo.style.display = 'none';
+
+    // Show game board and buttons  when form is submitted
+    playerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        gameBoard.style.display = 'grid';
+        // Show the control buttons
+        resetButton.style.display = 'block';
+        newGameButton.style.display = 'block';
+        //show game info
+        gameInfo.style.display = 'block';
+    });
+
+    // Hide game board when New Game button is clicked
+    newGameButton.addEventListener('click', function() {
+        gameBoard.style.display = 'none';
+       
+        // Hide the control buttons
+        resetButton.style.display = 'none';
+        newGameButton.style.display = 'none';
+        gameInfo.style.display = 'none';
+
+        // Optional: Reset the form and show it again
+        playerForm.reset();
+        playerForm.style.display = 'block';
+        
+        // Optional: Reset the player turn message
+        document.getElementById('player-turn').textContent = 'Start game or enter names';
+    });
+});
+
+
+

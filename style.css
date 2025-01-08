@@ -1,149 +1,154 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 :root {
     --primary-color: #2c3e50;
-    --secondary-color: #34495e;
-    --accent-color: #3498db;
-    --border-color: #bdc3c7;
-    --hover-color: #ecf0f1;
-    --win-color: #2ecc71;
-    --cell-size: 100px;
-    --border-radius: 8px;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --background-color: #ecf0f1;
+    --text-color: #2c3e50;
+    --winner-color: #27ae60;
+    --hover-color: #2980b9;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 body {
+    background-color: var(--background-color);
+    color: var(--text-color);
     font-family: 'Arial', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 0;
+    padding: 20px;
     min-height: 100vh;
-    background-color: #f5f5f5;
-    color: var(--primary-color);
 }
 
-.container {
-    text-align: center;
+/* Form Styling */
+#player-form {
     background-color: white;
-    padding: 2rem;
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 95%;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-h1 {
-    margin-bottom: 2rem;
-    color: var(--primary-color);
-    font-size: 2.5rem;
-}
-
-.game-info {
-    margin-bottom: 2rem;
-}
-
-.scoreboard {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-bottom: 1.5rem;
-}
-
-.score {
-    font-size: 1.2rem;
-    font-weight: bold;
-    padding: 0.8rem 1.5rem;
-    border-radius: var(--border-radius);
-    background-color: var(--hover-color);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.game-status {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin: 1rem 0;
-    min-height: 1.5em;
-}
-
-.player-inputs {
-    margin-bottom: 2rem;
-}
-
-.player-input {
-    margin-bottom: 1rem;
-}
-
-.player-input label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-}
-
-.player-input input {
-    padding: 0.8rem;
-    border: 2px solid var(--border-color);
-    border-radius: var(--border-radius);
+input[type="text"] {
     width: 100%;
-    max-width: 300px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
+    padding: 10px;
+    margin: 8px 0;
+    border: 2px solid var(--secondary-color);
+    border-radius: 5px;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
 
-.player-input input:focus {
+input[type="text"]:focus {
     outline: none;
-    border-color: var(--accent-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
 }
 
+/* Game Board Styling */
 .game-board {
     display: grid;
-    grid-template-columns: repeat(3, var(--cell-size));
-    gap: 5px;
-    margin: 2rem auto;
-    background-color: var(--border-color);
-    padding: 5px;
-    border-radius: var(--border-radius);
-    width: fit-content;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 400px;
+    margin: 20px auto;
+    background-color: var(--primary-color);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
 }
 
 .cell {
     background-color: white;
-    width: var(--cell-size);
-    height: var(--cell-size);
+    aspect-ratio: 1;
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-size: 2.5rem;
+    justify-content: center;
+    font-size: 2.5em;
     font-weight: bold;
     cursor: pointer;
+    border-radius: 8px;
     transition: all 0.3s ease;
-    border-radius: 4px;
 }
 
-.cell:not(.winner):hover {
-    background-color: var(--hover-color);
-}
-
-.cell:not(:empty):not(.winner):hover {
-    background-color: white;
-    cursor: not-allowed;
+.cell:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.02);
 }
 
 .cell.winner {
-    background-color: var(--win-color);
+    background-color: var(--winner-color);
     color: white;
-    animation: winningCell 0.5s ease-in-out forwards;
 }
 
-@keyframes winningCell {
+/* Buttons Styling */
+button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 5px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+button:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+#reset-button {
+    background-color: var(--accent-color);
+}
+
+#reset-button:hover {
+    background-color: #c0392b;
+}
+
+/* Game Info Styling */
+.game-info {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.score-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0;
+}
+
+.score-box {
+    text-align: center;
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    min-width: 100px;
+}
+
+#player-turn {
+    text-align: center;
+    font-size: 1.2em;
+    color: var(--primary-color);
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+/* Animation for winner */
+@keyframes winner-glow {
     0% {
         transform: scale(1);
     }
 
     50% {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 
     100% {
@@ -151,106 +156,54 @@ h1 {
     }
 }
 
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
+.cell.winner {
+    animation: winner-glow 1s infinite;
 }
 
-button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.reset-btn {
-    background-color: var(--accent-color);
-    color: white;
-}
-
-.new-game-btn {
-    background-color: var(--secondary-color);
-    color: white;
-}
-
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-button:active {
-    transform: translateY(0);
-}
-
-button:disabled {
-    background-color: var(--border-color);
-    cursor: not-allowed;
-    transform: none;
-}
-
+/* Responsive Design */
 @media (max-width: 480px) {
-    :root {
-        --cell-size: 80px;
-    }
-
-    .container {
-        padding: 1rem;
-    }
-
-    h1 {
-        font-size: 2rem;
+    .game-board {
+        max-width: 300px;
     }
 
     .cell {
-        font-size: 2rem;
-    }
-
-    .score {
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-    }
-
-    .controls {
-        flex-direction: column;
+        font-size: 2em;
     }
 
     button {
-        width: 100%;
+        padding: 10px 20px;
+        font-size: 14px;
     }
 }
 
-/* Accessibility focus styles */
-button:focus,
-input:focus,
-.cell:focus {
-    outline: 3px solid var(--accent-color);
-    outline-offset: 2px;
+/* Container for buttons */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
 }
 
-/* Animation for AI thinking state */
-.cell.ai-thinking {
-    cursor: not-allowed;
-    opacity: 0.7;
+/* Additional Animations */
+.cell:active {
+    transform: scale(0.95);
 }
 
-/* Winning line styles */
-.cell.winner[data-win-direction="horizontal"] {
-    background: linear-gradient(to right, var(--win-color) 0%, var(--win-color) 100%);
+.game-board,
+.game-info,
+button {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
 }
 
-.cell.winner[data-win-direction="vertical"] {
-    background: linear-gradient(to bottom, var(--win-color) 0%, var(--win-color) 100%);
-}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
 
-.cell.winner[data-win-direction="diagonal-1"] {
-    background: linear-gradient(45deg, var(--win-color) 0%, var(--win-color) 100%);
-}
-
-.cell.winner[data-win-direction="diagonal-2"] {
-    background: linear-gradient(-45deg, var(--win-color) 0%, var(--win-color) 100%);
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
